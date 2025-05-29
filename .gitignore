@@ -1,2 +1,16 @@
-node_modules
+# Node
+node_modules/
 .env
+*.log
+.DS_Store
+
+# OS
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+build/
