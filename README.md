@@ -55,36 +55,115 @@ plagiarism-tester/
 - express-rate-limit (rate limiting)
 
 ---
+## 🧪 .env Setup
 
-## 🔐 Environment Variables (.env)
 ```
-MONGO_URI=mongodb://localhost:27017/plagiarism_tester
-JWT_SECRET=your_jwt_secret_here
+PORT=3000
+MONGO_URI=mongodb://localhost:27017/plagiarism
+JWT_SECRET=your_jwt_secret
 
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
+EMAIL_USER=youremail@gmail.com
+EMAIL_PASS=your16charapppassword
 
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxxxx
 CALLBACK_URL=http://localhost:3000/api/auth/google/callback
-
-SESSION_SECRET=some_secret_key
+SESSION_SECRET=your_cookie_secret
 ```
 
 ---
 
-## 📋 API Endpoints Summary
+## 📌 API Endpoints & Payloads
 
-### 🔑 Auth Routes
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/google`
-- `GET /api/auth/google/callback`
-- `POST /api/auth/set-role` 
+### 🔐 Signup
 
-### 🔐 Password Reset
-- `POST /api/password/forgot-password`
-- `POST /api/password/verify-otp`
-- `POST /api/password/reset-password`
+**POST** `/api/auth/register`
 
+```json
+{
+  "username": "ahad",
+  "email": "ahad@example.com",
+  "password": "secure123",
+  "role": "student"
+}
+```
 
+---
+
+### 🔓 Login
+
+**POST** `/api/auth/login`
+
+```json
+{
+  "email": "ahad@example.com",
+  "password": "secure123"
+}
+```
+
+---
+
+### 🔁 Forgot Password via OTP (Single Endpoint)
+
+**POST** `/api/auth/handle-otp`
+
+#### Request OTP:
+
+```json
+{
+  "action": "request",
+  "email": "ahad@example.com"
+}
+```
+
+#### Verify OTP:
+
+```json
+{
+  "action": "verify",
+  "email": "ahad@example.com",
+  "otp": "123456"
+}
+```
+
+#### Reset Password:
+
+```json
+{
+  "action": "reset",
+  "email": "ahad@example.com",
+  "otp": "123456",
+  "newPassword": "newsecurepass"
+}
+```
+
+---
+
+### 🧭 Google Login
+
+- **GET** `/api/auth/google` → starts OAuth flow
+- **GET** `/api/auth/google/callback` → handles login
+
+After first login, if the user's role is missing, frontend should call:
+
+### 🧩 Set Role
+
+**POST** `/api/auth/set-role`
+
+```json
+{
+  "email": "ahad@example.com",
+  "role": "teacher"
+}
+```
+
+---
+
+## 🚀 Run the Project
+
+```bash
+npm install
+npm run dev
+```
+
+> Make sure MongoDB is running locally or use MongoDB Atlas.
