@@ -1,29 +1,31 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const authRoutes = require('./routes/authRoutes');
-const passwordRoutes = require('./routes/passwordRoutes');
-const session = require('cookie-session');
-const passport = require('passport');
+import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import session from 'cookie-session';
+import passport from 'passport';
+import './auth/googleStrategy.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 app.use(express.json());
 
+// cookie-session setup
 app.use(session({
   name: 'session',
   keys: [process.env.SESSION_SECRET],
-  maxAge: 24 * 60 * 60 * 1000
+  maxAge: 24 * 60 * 60 * 1000 // 1 day
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use('/api/password', passwordRoutes);
+app.use(express.urlencoded({extended: true}))
 app.use('/api/auth', authRoutes);
 
-// Connect to DB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
-    app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+    app.listen(process.env.PORT, () => {
+      console.log(`Server running on http://localhost:${process.env.PORT}`);
+    });
   })
   .catch(err => console.error('MongoDB connection error:', err));

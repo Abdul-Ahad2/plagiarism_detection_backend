@@ -1,36 +1,35 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/user');
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import User from '../models/user.js';
 
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URL
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      let user = await User.findOne({ email: profile.emails[0].value });
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.CALLBACK_URL
+}, async (accessToken, refreshToken, profile, done) => {
+  try {
+    const email = profile.emails[0].value;
+    let user = await User.findOne({ email });
 
-      if (!user) {
-        // TEMP user created without role – will ask for it in frontend
-        user = await User.create({
-          username: profile.displayName,
-          email: profile.emails[0].value,
-          role: null, // ask this on frontend
-          password: 'oauth', // dummy
-        });
-      }
-
-      return done(null, user);
-    } catch (err) {
-      return done(err, null);
+    if (!user) {
+      user = await User.create({
+        username: profile.displayName,
+        email,
+        password: 'oauth', // dummy
+        role: null // will be selected later
+      });
     }
+
+    done(null, user);
+  } catch (err) {
+    done(err, null);
   }
-));
+}));
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
-passport.deserializeUser((id, done) => {
-  User.findById(id).then(user => done(null, user));
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
 });
