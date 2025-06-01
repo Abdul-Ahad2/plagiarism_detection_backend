@@ -27,10 +27,8 @@ This backend system powers a plagiarism checker tool, featuring secure authentic
 plagiarism-tester/
 ├── controller/
 │   ├── authController.js
-│   └── passwordController.js
 ├── routes/
 │   ├── authRoutes.js
-│   └── passwordRoutes.js
 ├── services/
 │   ├── authService.js
 │   └── otpService.js
