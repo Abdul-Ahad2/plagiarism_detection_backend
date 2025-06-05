@@ -33,16 +33,13 @@ const login = async (email, password) => {
 };
 
 export async function findOrCreateGoogleUser(profile) {
-  // 1) Extract email from Google profile
   const email = profile.emails?.[0]?.value;
   if (!email) {
     throw new Error("Google account has no email");
   }
 
-  // 2) Look for an existing user by email
   let user = await User.findOne({ email }).exec();
   if (user) {
-    // If they exist but somehow have no role (legacy account), set default now
     if (!user.role) {
       user.role = "student";
       await user.save();
@@ -50,12 +47,11 @@ export async function findOrCreateGoogleUser(profile) {
     return user;
   }
 
-  // 3) If no user, create a new one with default role = "student"
   user = await User.create({
     username: profile.displayName || email.split("@")[0],
     email,
-    password: "oauth", // dummy value (won’t be used)
-    role: "student", // <— default role
+    password: "oauth",
+    role: "student",
   });
 
   return user;

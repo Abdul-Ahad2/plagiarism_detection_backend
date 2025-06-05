@@ -5,9 +5,11 @@ import session from "express-session";
 import passport from "passport";
 import "./googleauth/google.strategy.js";
 import authRoutes from "./routes/auth.route.js";
+import reportRoutes from "./routes/report.route.js";
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // cookie-session setup
 app.use(
@@ -25,8 +27,9 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.urlencoded({ extended: true }));
-app.use("/api/auth", authRoutes);
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/reports", reportRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

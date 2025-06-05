@@ -1,13 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
-/**
- * Express middleware to verify a JWT sent in the Authorization header.
- * If valid, attaches the decoded payload to req.user and calls next().
- * Otherwise, responds 401 Unauthorized.
- *
- * Expects header: Authorization: Bearer <token>
- */
 export async function verifyJwt(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
