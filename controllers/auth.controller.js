@@ -112,6 +112,8 @@ export const googleCallback = [
     session: true,
   }),
   (req, res) => {
+    console.log(process.env.CLIENT_URL + "/dashboard/student/upload");
+
     return res.redirect(process.env.CLIENT_URL + "/dashboard/student/upload");
   },
 ];
