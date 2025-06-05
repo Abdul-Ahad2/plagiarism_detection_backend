@@ -1,4 +1,4 @@
-import Otp from '../models/otp.js';
+import Otp from '../models/otp.model.js';
 import nodemailer from 'nodemailer';
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
