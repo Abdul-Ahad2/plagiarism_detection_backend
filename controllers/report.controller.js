@@ -1,5 +1,6 @@
 import {
   clearReportContentById,
+  fetchPlagiarisedReport,
   fetchUserReports,
 } from "../service/report.service.js";
 
@@ -36,6 +37,24 @@ export async function getUserReports(req, res) {
     return res.status(200).json({
       message: "Reports fetched successfully",
       reports: reports,
+    });
+  } catch (err) {
+    console.error("[reportController.getUserReports] Error:", err);
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch reports", error: err.message });
+  }
+}
+
+export async function getPlagiarisedReport(req, res) {
+  try {
+    const report_id = req.params.id; // string, set by verifyJwt
+
+    const report = await fetchPlagiarisedReport(report_id);
+
+    return res.status(200).json({
+      message: "Report fetched successfully",
+      report: report,
     });
   } catch (err) {
     console.error("[reportController.getUserReports] Error:", err);

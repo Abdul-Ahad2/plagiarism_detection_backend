@@ -51,3 +51,9 @@ export async function fetchUserReports(userId) {
 
   return processed;
 }
+
+export async function fetchPlagiarisedReport(id) {
+  const rawReport = await reportModel.find({ _id: id });
+
+  return rawReport;
+}
